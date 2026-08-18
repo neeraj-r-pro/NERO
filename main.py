@@ -11,32 +11,47 @@ def main():
     print("NERO is starting...")
     print()
 
-    # Initialize NERO components
     voice = VoiceEngine()
     brain = NeroBrain()
     executor = NeroExecutor()
 
     print()
     print("NERO is ready.")
+    print("Say 'NERO, shut down' to exit.")
     print("--------------------------------")
 
-    # Listen for a command
-    command = voice.listen()
+    while True:
 
-    print()
-    print(f"You said: {command}")
+        command = voice.listen()
 
-    # Understand the command
-    task = brain.understand(command)
+        # No speech detected
+        if not command:
+            print("NERO: I didn't hear a command.")
+            print("--------------------------------")
+            continue
 
-    print()
-    print(f"NERO task: {task}")
+        print()
+        print(f"You said: {command}")
 
-    # Execute the task
-    result = executor.execute(task)
+        # Exit command
+        command_lower = command.lower()
 
-    print()
-    print(f"NERO: {result}")
+        if "shut down" in command_lower or "shutdown" in command_lower:
+            print("NERO: Shutting down.")
+            break
+
+        # Understand command
+        task = brain.understand(command)
+
+        print()
+        print(f"NERO task: {task}")
+
+        # Execute task
+        result = executor.execute(task)
+
+        print()
+        print(f"NERO: {result}")
+        print("--------------------------------")
 
 
 if __name__ == "__main__":
