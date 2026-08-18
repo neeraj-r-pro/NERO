@@ -1,0 +1,31 @@
+# Virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Whisper / AI model files
+*.bin
+*.pt
+*.pth
+*.onnx
+
+# Audio recordings
+*.wav
+*.mp3
+*.m4a
+
+# Local data
+data/*
+!data/.gitkeep
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+
+# OS
+Thumbs.db
+.DS_Store
