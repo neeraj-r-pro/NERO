@@ -1,5 +1,6 @@
 from nero.voice.voice_engine import VoiceEngine
-from nero.brain.nero_brain import NeroBrain
+from nero.brain.command_normalizer import CommandNormalizer
+from nero.brain.intent_router import IntentRouter
 from nero.automation.executor import NeroExecutor
 
 
@@ -12,7 +13,8 @@ def main():
     print()
 
     voice = VoiceEngine()
-    brain = NeroBrain()
+    normalizer = CommandNormalizer()
+    router = IntentRouter()
     executor = NeroExecutor()
 
     print()
@@ -22,9 +24,9 @@ def main():
 
     while True:
 
+        # Listen
         command = voice.listen()
 
-        # No speech detected
         if not command:
             print("NERO: I didn't hear a command.")
             print("--------------------------------")
@@ -33,24 +35,50 @@ def main():
         print()
         print(f"You said: {command}")
 
-        # Exit command
-        command_lower = command.lower()
+        # Normalize
+        normalized_command = normalizer.normalize(command)
 
-        if "shut down" in command_lower or "shutdown" in command_lower:
-            print("NERO: Shutting down.")
-            break
+        if not normalized_command:
+            print("NERO: I didn't hear a command.")
+            print("--------------------------------")
+            continue
 
-        # Understand command
-        task = brain.understand(command)
+        print(f"NERO normalized: {normalized_command}")
 
-        print()
-        print(f"NERO task: {task}")
+        # Route
+        result = router.route(normalized_command)
 
-        # Execute task
-        result = executor.execute(task)
+        route = result["route"]
 
-        print()
-        print(f"NERO: {result}")
+        # System commands
+        if route == "system":
+
+            task = result["task"]
+
+            if task["intent"] == "shutdown":
+                print("NERO: Shutting down.")
+                break
+
+        # Fast commands
+        elif route == "fast":
+
+            task = result["task"]
+
+            print()
+            print(f"Fast task: {task}")
+
+            response = executor.execute(task)
+
+            print()
+            print(f"NERO: {response}")
+
+        # AI commands
+        elif route == "ai":
+
+            print()
+            print("NERO: This task requires AI reasoning.")
+            print(f"Command: {result['command']}")
+
         print("--------------------------------")
 
 

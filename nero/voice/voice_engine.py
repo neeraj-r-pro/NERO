@@ -10,7 +10,7 @@ SAMPLE_RATE = 16000
 CHANNELS = 1
 AUDIO_FILE = "data/command.wav"
 
-MODEL_SIZE = "base.en"
+MODEL_SIZE = "tiny.en"
 
 # Voice detection settings
 CALIBRATION_DURATION = 1.0
@@ -23,7 +23,7 @@ MAX_RECORDING_DURATION = 15.0
 MIN_SPEECH_DURATION = 0.4
 
 # How much louder speech should be than background noise
-THRESHOLD_MULTIPLIER = 2.5
+THRESHOLD_MULTIPLIER = 1.5
 
 
 class VoiceEngine:
@@ -67,7 +67,7 @@ class VoiceEngine:
 
         threshold = max(
             noise_level * THRESHOLD_MULTIPLIER,
-            0.01
+            0.0005
         )
 
         print(f"Background level: {noise_level:.4f}")
@@ -176,7 +176,7 @@ class VoiceEngine:
 
         segments, info = self.model.transcribe(
             AUDIO_FILE,
-            beam_size=5,
+            beam_size=1,
             vad_filter=True
         )
 
